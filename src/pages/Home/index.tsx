@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Platform, Dimensions, KeyboardAvoidingView } from 'react-native';
+import { Platform, Dimensions } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
@@ -26,6 +27,11 @@ const Home: React.FC = () => {
   const [title, setTitle] = useState<string>('');
   const [message, setMessage] = useState<string>('');
 
+  const [date, setDate] = useState(new Date())
+  const [mode, setMode] = useState('date')
+  const [show, setShow] = useState<boolean>(false);
+  const [text, setText] = useState("Empty")
+
   useEffect(() => {
     registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
     // @ts-ignore
@@ -44,6 +50,21 @@ const Home: React.FC = () => {
       Notifications.removeNotificationSubscription(responseListener.current);
     };
   }, []);
+
+  const showMode = (currentMode) => {
+    setShow(true)
+    setMode(currentMode)
+  }
+
+  const showDatePicker = () => {
+    setShow(true)
+  }
+
+  const handleDatePicker = (event: Event, selectedDate: Date) => {
+    setDate(selectedDate)
+
+    setShow(false)
+  }
 
   async function schedulePushNotification() {
     await Notifications.scheduleNotificationAsync({
@@ -78,6 +99,21 @@ const Home: React.FC = () => {
           <TouchableButton color="#1a46d4" onPress={schedulePushNotification}>
             Testar
           </TouchableButton>
+
+          <TouchableButton color="#1a46d4" onPress={showDatePicker}>
+            Selecionar data
+          </TouchableButton>
+
+          {show &&
+            <DateTimePicker
+              testID='dateTimePicker'
+              value={date}
+              onChange={handleDatePicker}
+              mode={"date"}
+              is24Hour={true}
+              display="default"
+            />
+          }
         </Wrapper>
       </KeyBoardAvoiding>
     </Container>
