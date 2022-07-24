@@ -1,9 +1,14 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { Platform, Dimensions, KeyboardAvoidingView } from 'react-native';
+
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
-import React, { useState, useEffect, useRef } from 'react';
-import { Text, View, Button, Platform } from 'react-native';
 
-import { Container } from './styles';
+import Input from '../../components/Input';
+
+import { Container, Wrapper, KeyBoardAvoiding } from './styles';
+import TouchableButton from '../../components/Button';
+const { width, height } = Dimensions.get('window');
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -13,11 +18,13 @@ Notifications.setNotificationHandler({
   }),
 });
 
-const Home = () => {
+const Home: React.FC = () => {
   const [expoPushToken, setExpoPushToken] = useState<string | undefined>('');
   const [notification, setNotification] = useState<Notifications.Notification>();
   const notificationListener = useRef<PushSubscription>();
   const responseListener = useRef<PushSubscription>();
+  const [title, setTitle] = useState<string>('');
+  const [body, setBody] = useState<string>('');
 
   useEffect(() => {
     registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
@@ -36,39 +43,50 @@ const Home = () => {
       // @ts-ignore
       Notifications.removeNotificationSubscription(responseListener.current);
     };
-
-    console.log(expoPushToken)
-
   }, []);
+
+  async function schedulePushNotification() {
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title,
+        body,
+        data: { data: 'goes here' },
+      },
+      trigger: { seconds: 2 },
+    });
+  }
 
   return (
     <Container>
-      <Text>Your expo push token: {expoPushToken}</Text>
-      <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-        <Text>Title: {notification && notification.request.content.title} </Text>
-        <Text>Body: {notification && notification.request.content.body}</Text>
-        <Text>Data: {notification && JSON.stringify(notification.request.content.data)}</Text>
-      </View>
-      <Button
-        title="Press to schedule a notification"
-        onPress={async () => {
-          await schedulePushNotification();
-        }}
-      />
+      <KeyBoardAvoiding
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <Wrapper style={{ width: width * 0.9, height: height * 0.7 }}>
+
+          <Input
+            placeholder='Título'
+            value={title}
+            onChangeText={(text) => setTitle(text)}
+          />
+
+          <Input
+            placeholder='Body'
+            value={body}
+            onChangeText={(text) => setBody(text)}
+          />
+
+          <TouchableButton color="#1a46d4" onPress={async () => {
+            await schedulePushNotification();
+          }}>
+            Testar
+          </TouchableButton>
+        </Wrapper>
+      </KeyBoardAvoiding>
     </Container>
   );
 }
 
-async function schedulePushNotification() {
-  await Notifications.scheduleNotificationAsync({
-    content: {
-      title: "Olá 📬",
-      body: 'Se Fudeu',
-      data: { data: 'goes here' },
-    },
-    trigger: { seconds: 2 },
-  });
-}
+
 
 async function registerForPushNotificationsAsync() {
   let token;
