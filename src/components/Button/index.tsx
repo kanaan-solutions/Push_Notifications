@@ -6,7 +6,7 @@ import { TouchableProps } from '../../utils/Interfaces';
 import { Container, ButtonText } from './styles';
 const { width, height } = Dimensions.get("window");
 
-const TouchableButton: React.FC<TouchableProps> = ({ children, color, onPress, tvParallaxProperties }) => {
+const TouchableButton: React.FC<TouchableProps> = ({ children, color, onPress, height, width }) => {
   return (
     <Container
       tvParallaxProperties={{
@@ -14,8 +14,8 @@ const TouchableButton: React.FC<TouchableProps> = ({ children, color, onPress, t
         pressDelay: 0.5
       }}
       style={{
-        width: width * 0.7,
-        height: height * 0.06,
+        width: width,
+        height: height,
       }}
       color={color}
       onPress={onPress}

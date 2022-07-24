@@ -15,3 +15,21 @@ export const Wrapper = styled.View `
 	justify-content: center;
 	background-color: white;
 `;
+
+export const DateContainer = styled.View`
+    background-color: white;
+    margin-top: 15px;
+    border-radius: 6px;
+    padding: 15px;
+    border: 1px solid #c3c3c3 ;
+`;
+
+export const DateText = styled.Text`
+	color: black;
+	font-size: 14px;
+`;
+
+export const ButtonDateContainer = styled.View`
+	flex: 1;
+	flex-direction: row;
+`;

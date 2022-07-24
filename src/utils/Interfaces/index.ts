@@ -11,4 +11,6 @@ export interface TouchableProps extends ButtonHTMLAttributes<TouchableOpacityPro
     color?: string;
     onPress?: ((event: FormEvent<HTMLFormElement>) => void) | Promise<void>;
     tvParallaxProperties?: {};
+    width?: number;
+    height?: number;
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Platform, Dimensions, View, StyleSheet } from 'react-native';
+import { Platform, Dimensions, View } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 import * as Device from 'expo-device';
@@ -7,7 +7,14 @@ import * as Notifications from 'expo-notifications';
 
 import Input from '../../components/Input';
 
-import { Container, Wrapper, KeyBoardAvoiding } from './styles';
+import {
+  Container,
+  Wrapper,
+  KeyBoardAvoiding,
+  DateContainer,
+  DateText,
+  ButtonDateContainer
+} from './styles';
 import TouchableButton from '../../components/Button';
 const { width, height } = Dimensions.get('window');
 
@@ -30,7 +37,7 @@ const Home: React.FC = () => {
   const [date, setDate] = useState(new Date())
   const [mode, setMode] = useState('date')
   const [show, setShow] = useState<boolean>(false);
-  const [text, setText] = useState("Empty")
+  const [text, setText] = useState("00/00/00 00:00")
 
   useEffect(() => {
     registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
@@ -51,7 +58,7 @@ const Home: React.FC = () => {
     };
   }, []);
 
-  const showMode = (currentMode) => {
+  const showMode = (currentMode: any) => {
     setShow(true)
     setMode(currentMode)
   }
@@ -64,14 +71,13 @@ const Home: React.FC = () => {
     const currentDate = selectedDate || date;
     setShow(Platform.OS === "ios");
     setDate(currentDate);
-    console.log(currentDate)
 
     let tempDate = new Date(currentDate);
     let fDate = tempDate.getDate() + '/' + (tempDate.getMonth() + 1) + '/' + tempDate.getFullYear();
-    let fTime = 'Hours: ' + tempDate.getHours() + ' | Minutes: ' + tempDate.getMinutes();
-    setText(fDate + '\n' + fTime)
+    let fTime = tempDate.getHours() + ":" + tempDate.getMinutes();
+    setText(fDate + " " + fTime)
 
-    // setShow(false)
+    // console.log(text)
   }
 
   async function schedulePushNotification() {
@@ -90,7 +96,7 @@ const Home: React.FC = () => {
       <KeyBoardAvoiding
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <Wrapper style={{ width: width * 0.9, height: height * 0.7 }}>
+        <Wrapper style={{ width: width * 0.9, height: height * 0.7 }} >
 
           <Input
             placeholder='Título'
@@ -104,22 +110,35 @@ const Home: React.FC = () => {
             onChangeText={(text) => setMessage(text)}
           />
 
-          <TouchableButton color="#1a46d4" onPress={() => showMode('date')}>
+          <DateContainer style={{
+            width: width * 0.7,
+            height: height * 0.06,
+          }}>
+            <DateText >
+              {text}
+            </DateText>
+          </DateContainer>
+
+          <ButtonDateContainer>
+            <TouchableButton color="#1a46d4" onPress={() => showMode('date')} width={width * 0.4} height={height * 0.06}>
             Selecione a data
           </TouchableButton>
 
-          <TouchableButton color="#1a46d4" onPress={() => showMode('time')}>
-            Selecione o horário
-          </TouchableButton>
+            <View style={{ marginLeft: height * 0.02 }}>
+              <TouchableButton color="#1a46d4" onPress={() => showMode('time')} width={width * 0.4} height={height * 0.06}>
+                Selecione o horário
+              </TouchableButton>
+            </View>
+          </ButtonDateContainer>
 
-          <TouchableButton color="#1a46d4" onPress={schedulePushNotification}>
-            Testar
+          <View style={{ marginBottom: height * 0.25 }}>
+            <TouchableButton color="#1a46d4" onPress={schedulePushNotification} width={width * 0.7} height={height * 0.06}>
+              Enviar Notificação
           </TouchableButton>
+          </View>
 
           {show &&
-
             <DateTimePicker
-            style={styles.dateComponent}
               testID='dateTimePicker'
               value={date}
               onChange={handleDatePicker}
@@ -166,11 +185,5 @@ async function registerForPushNotificationsAsync() {
 
   return token;
 }
-
-const styles = StyleSheet.create({
-  dateComponent: {
-    width: 250,
-  }
-})
 
 export default Home;
