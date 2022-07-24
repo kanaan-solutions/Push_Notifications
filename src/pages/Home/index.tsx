@@ -24,7 +24,7 @@ const Home: React.FC = () => {
   const notificationListener = useRef<PushSubscription>();
   const responseListener = useRef<PushSubscription>();
   const [title, setTitle] = useState<string>('');
-  const [body, setBody] = useState<string>('');
+  const [message, setMessage] = useState<string>('');
 
   useEffect(() => {
     registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
@@ -49,7 +49,7 @@ const Home: React.FC = () => {
     await Notifications.scheduleNotificationAsync({
       content: {
         title,
-        body,
+        body: message,
         data: { data: 'goes here' },
       },
       trigger: { seconds: 2 },
@@ -70,14 +70,12 @@ const Home: React.FC = () => {
           />
 
           <Input
-            placeholder='Body'
-            value={body}
-            onChangeText={(text) => setBody(text)}
+            placeholder='Mensagem'
+            value={message}
+            onChangeText={(text) => setMessage(text)}
           />
 
-          <TouchableButton color="#1a46d4" onPress={async () => {
-            await schedulePushNotification();
-          }}>
+          <TouchableButton color="#1a46d4" onPress={schedulePushNotification}>
             Testar
           </TouchableButton>
         </Wrapper>

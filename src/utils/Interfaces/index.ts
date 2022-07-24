@@ -9,6 +9,6 @@ export interface ITextInput extends TextInputProps {
 
 export interface TouchableProps extends ButtonHTMLAttributes<TouchableOpacityProps> {
     color?: string;
-    onPress?: ((event: FormEvent<HTMLFormElement>) => void);
+    onPress?: ((event: FormEvent<HTMLFormElement>) => void) | Promise<void>;
     tvParallaxProperties?: {};
 }
