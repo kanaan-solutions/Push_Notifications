@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Platform, Dimensions } from 'react-native';
+import { Platform, Dimensions, View, StyleSheet } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 import * as Device from 'expo-device';
@@ -61,9 +61,17 @@ const Home: React.FC = () => {
   }
 
   const handleDatePicker = (event: Event, selectedDate: Date) => {
-    setDate(selectedDate)
+    const currentDate = selectedDate || date;
+    setShow(Platform.OS === "ios");
+    setDate(currentDate);
+    console.log(currentDate)
 
-    setShow(false)
+    let tempDate = new Date(currentDate);
+    let fDate = tempDate.getDate() + '/' + (tempDate.getMonth() + 1) + '/' + tempDate.getFullYear();
+    let fTime = 'Hours: ' + tempDate.getHours() + ' | Minutes: ' + tempDate.getMinutes();
+    setText(fDate + '\n' + fTime)
+
+    // setShow(false)
   }
 
   async function schedulePushNotification() {
@@ -96,20 +104,26 @@ const Home: React.FC = () => {
             onChangeText={(text) => setMessage(text)}
           />
 
+          <TouchableButton color="#1a46d4" onPress={() => showMode('date')}>
+            Selecione a data
+          </TouchableButton>
+
+          <TouchableButton color="#1a46d4" onPress={() => showMode('time')}>
+            Selecione o horário
+          </TouchableButton>
+
           <TouchableButton color="#1a46d4" onPress={schedulePushNotification}>
             Testar
           </TouchableButton>
 
-          <TouchableButton color="#1a46d4" onPress={showDatePicker}>
-            Selecionar data
-          </TouchableButton>
-
           {show &&
+
             <DateTimePicker
+            style={styles.dateComponent}
               testID='dateTimePicker'
               value={date}
               onChange={handleDatePicker}
-              mode={"date"}
+            mode={mode}
               is24Hour={true}
               display="default"
             />
@@ -152,5 +166,11 @@ async function registerForPushNotificationsAsync() {
 
   return token;
 }
+
+const styles = StyleSheet.create({
+  dateComponent: {
+    width: 250,
+  }
+})
 
 export default Home;
