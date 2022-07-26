@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Platform, Dimensions, View } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import { Platform, Dimensions } from 'react-native';
 
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
@@ -11,9 +10,6 @@ import {
   Container,
   Wrapper,
   KeyBoardAvoiding,
-  DateContainer,
-  DateText,
-  ButtonDateContainer
 } from './styles';
 import TouchableButton from '../../components/Button';
 const { width, height } = Dimensions.get('window');
@@ -34,11 +30,6 @@ const Home: React.FC = () => {
   const [title, setTitle] = useState<string>('');
   const [message, setMessage] = useState<string>('');
 
-  const [date, setDate] = useState(new Date())
-  const [mode, setMode] = useState('date')
-  const [show, setShow] = useState<boolean>(false);
-  const [text, setText] = useState("00/00/00 00:00")
-
   useEffect(() => {
     registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
     // @ts-ignore
@@ -58,26 +49,15 @@ const Home: React.FC = () => {
     };
   }, []);
 
-  const showMode = (currentMode: any) => {
-    setShow(true)
-    setMode(currentMode)
-  }
-
-  const showDatePicker = () => {
-    setShow(true)
-  }
-
-  const handleDatePicker = (event: Event, selectedDate: Date) => {
-    const currentDate = selectedDate || date;
-    setShow(Platform.OS === "ios");
-    setDate(currentDate);
-
-    let tempDate = new Date(currentDate);
-    let fDate = tempDate.getDate() + '/' + (tempDate.getMonth() + 1) + '/' + tempDate.getFullYear();
-    let fTime = tempDate.getHours() + ":" + tempDate.getMinutes();
-    setText(fDate + " " + fTime)
-
-    // console.log(text)
+  async function PushNotification() {
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title,
+        body: message,
+        data: { data: 'goes here' },
+      },
+      trigger: { seconds: 1 },
+    });
   }
 
   async function schedulePushNotification() {
@@ -87,10 +67,12 @@ const Home: React.FC = () => {
         body: message,
         data: { data: 'goes here' },
       },
-      trigger: { seconds: 2 },
+      trigger: {
+        seconds: 10,
+        repeats: true,
+      },
     });
   }
-
   return (
     <Container>
       <KeyBoardAvoiding
@@ -110,43 +92,13 @@ const Home: React.FC = () => {
             onChangeText={(text) => setMessage(text)}
           />
 
-          <DateContainer style={{
-            width: width * 0.7,
-            height: height * 0.06,
-          }}>
-            <DateText >
-              {text}
-            </DateText>
-          </DateContainer>
-
-          <ButtonDateContainer>
-            <TouchableButton color="#1a46d4" onPress={() => showMode('date')} width={width * 0.4} height={height * 0.06}>
-            Selecione a data
+          <TouchableButton color="#1a46d4" onPress={schedulePushNotification} width={width * 0.7} height={height * 0.06}>
+            Repetir Notificações
           </TouchableButton>
 
-            <View style={{ marginLeft: height * 0.02 }}>
-              <TouchableButton color="#1a46d4" onPress={() => showMode('time')} width={width * 0.4} height={height * 0.06}>
-                Selecione o horário
-              </TouchableButton>
-            </View>
-          </ButtonDateContainer>
-
-          <View style={{ marginBottom: height * 0.25 }}>
-            <TouchableButton color="#1a46d4" onPress={schedulePushNotification} width={width * 0.7} height={height * 0.06}>
+          <TouchableButton color="#1a46d4" onPress={PushNotification} width={width * 0.7} height={height * 0.06}>
               Enviar Notificação
           </TouchableButton>
-          </View>
-
-          {show &&
-            <DateTimePicker
-              testID='dateTimePicker'
-              value={date}
-              onChange={handleDatePicker}
-            mode={mode}
-              is24Hour={true}
-              display="default"
-            />
-          }
         </Wrapper>
       </KeyBoardAvoiding>
     </Container>
