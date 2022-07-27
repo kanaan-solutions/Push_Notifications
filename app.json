@@ -1,0 +1,39 @@
+{
+  "expo": {
+    "name": "WhatsApp",
+    "slug": "WhatsApp",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/YoutubeIcon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "notification": {
+      "icon": "./assets/notificationIconEdited.png",
+      "color": "#FFFFFF"
+    },
+    "icon": "./assets/YoutubeIcon.png",
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.yourcompany.yourappname",
+      "buildNumber": "1.0.0"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/YoutubeIcon.png",
+        "backgroundColor": "#FFFFFF"
+      },
+      "package": "com.yourcompany.yourappname",
+      "versionCode": 1
+    },
+    "web": {
+      "favicon": "./assets/índice.png"
+    }
+  }
+}
