@@ -68,10 +68,10 @@ const Home: React.FC = () => {
         data: { data: 'goes here' },
       },
       trigger: {
-        seconds: 10,
-        repeats: true,
+        seconds: 20,
       },
     });
+    await Notifications.cancelScheduledNotificationAsync();
   }
   return (
     <Container>
@@ -93,7 +93,7 @@ const Home: React.FC = () => {
           />
 
           <TouchableButton color="#1a46d4" onPress={schedulePushNotification} width={width * 0.7} height={height * 0.06}>
-            Repetir Notificações
+            Agendar Notificação
           </TouchableButton>
 
           <TouchableButton color="#1a46d4" onPress={PushNotification} width={width * 0.7} height={height * 0.06}>
