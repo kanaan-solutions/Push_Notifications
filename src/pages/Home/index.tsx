@@ -65,13 +65,12 @@ const Home: React.FC = () => {
       content: {
         title,
         body: message,
-        data: { data: 'goes here' },
+        data: { data: "goes here" },
       },
       trigger: {
         seconds: 20,
       },
     });
-    await Notifications.cancelScheduledNotificationAsync();
   }
   return (
     <Container>

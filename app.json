@@ -12,7 +12,8 @@
     },
     "notification": {
       "icon": "./assets/notificationIconEdited.png",
-      "color": "#FFFFFF"
+      "color": "#8B0000",
+      "iosDisplayInForeground": true
     },
     "icon": "./assets/YoutubeIcon.png",
     "updates": {
